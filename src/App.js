@@ -1,29 +1,42 @@
 import './App.css';
 import React, { useRef, useState, useEffect } from 'react';
+
+//BLOCKLY COMPONENT
 import BlocklyComponent from './Blockly';
 
+//GAMEPAD GUI GAME 
 import Gamepad from './Gamepad/gamepad';
 import Gui from './js/gui';
 import Game from './js/game';
 
+//CONFIG
 import levels from './config/levels';
 import {tb_c, tb, Blocks} from './config/blockly';
 
+//COMPONENTS
 import Map from './components/map';
 import LevelBar from './components/levelBar';
 import Capacity from './components/capacity';
+import Buttons from './components/buttons';
 
-// IL RESTE CAPACITY / LEVEL BAR A GERER + GAMEPADINIT A SUPP 
-// COMMENT RECUP SIMPLEWORKSPACE, GAME, GUI DU USEEFFECT
 
 function App() {
 
+//Blockly workspace 
 const simpleWorkspace = useRef();
 
-const [id , SetId] = useState(6);
-const [categories, SetCategories] = useState(false);
-const [start, SetStart] = useState(true) ;
-const [capacity, setCapacity] = useState(0);
+//Id of the current level
+const [id , SetId] = useState(0);
+const [check, setCheck] = useState(false);
+const [unlock, setUnlock] = useState([id]);
+
+//Gamepad const : "Instructions" buttons and categories display (pb with true)
+const categories =false ;
+const start = true ;
+
+const [gamepad, setGamepad] = useState(0);
+const [game, setGame] = useState(0);
+
 
 const ToolBox = categories ? tb_c : tb 
 
@@ -44,19 +57,19 @@ const ToolBox = categories ? tb_c : tb
         }),
     
         gui = new Gui(),
-        game = new Game(gui, gamepad)
+        game = new Game(gui, gamepad, setCheck, setUnlock, unlock, id)
+
+        setGamepad(gamepad);
+        setGame(game);
     
         // load the level
         game.loadLevel(levels[id])
     
-        document.getElementById('load').onclick = () =>  game.loadCode() + console.clear()
-        document.getElementById('play').onclick = () => gamepad.play()
-        document.getElementById('pause').onclick = () => gamepad.pause()
   }, [id])
 
 
+
     return (
-    
         <>  
 
       <BlocklyComponent ref={simpleWorkspace}
@@ -77,18 +90,12 @@ const ToolBox = categories ? tb_c : tb
         <div id="game-div">
 
             <header>
-                    <LevelBar SetId={SetId} />
+              <LevelBar levels={levels} SetId={SetId} game={game} unlock={unlock} />
             </header>
 
             <Map id={id} />
-
-            <Capacity levels={levels} id={id} setCapacity={setCapacity} simpleWorkspace={simpleWorkspace} />
-            <div className="buttons">
-              <button id="play" className="button green" >Lancer</button>
-              <button id="pause" className="button green"  >Pause</button> 
-              <button id="load" className="button violet" > Valider </button>
-          </div>
-
+            <Capacity levels={levels} id={id} simpleWorkspace={simpleWorkspace} />
+            <Buttons game={game} gamepad={gamepad} check={check} id={id} levels={levels} SetId={SetId} setCheck={setCheck} />
         </div>
 
     </div>

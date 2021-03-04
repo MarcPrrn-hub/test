@@ -1,17 +1,21 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import Blockly from 'blockly';
 
-export default function Capacity({levels, id, setCapacity, simpleWorkspace}) {
+export default function Capacity({levels, id, simpleWorkspace}) {
 
-    // simpleWorkspace.workspace.addChangeListener(() => {
-    //     setCapacity(Blockly.getMainWorkspace().remainingCapacity())
-    // })
+    const [capacity, setCapacity] = useState(0);
 
+    useEffect(() => {
+        simpleWorkspace.current.workspace.addChangeListener(() => {
+        setCapacity(Blockly.getMainWorkspace().remainingCapacity())
+    }, [simpleWorkspace])
+
+    })
 
     return (
 
-        <div id="capacity" style={{display: levels[id].maxBlocks===null ? "none" : "block" }}>
-                Il te reste 10 blocs disponibles.
+        <div style={{display: capacity===Infinity ? "none" : "block" }}>
+                Il te reste {capacity} blocs disponibles.
         </div>
     )
 }

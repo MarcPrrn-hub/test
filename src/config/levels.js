@@ -184,7 +184,7 @@ const levels = [
         //sprite viewports on start
         images: {
             pegman: {
-                x: -485,// YOUUUUUHOUU ca cest a l'envers edit : mais pas tt le temps :'(
+                x: -485,
                 y: 191
             },
             rect: {

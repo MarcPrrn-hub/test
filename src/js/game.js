@@ -10,13 +10,18 @@ import Gamepad from '../Gamepad/gamepad'
 
 class Game {
     // the gamepad is passed to the contructor
-    constructor(gui, gamepad) {
+    constructor(gui, gamepad, setCheck,setUnlock, unlock, id) { //SETCHECK/UNLOCK/SETUNLOCK IS NEW
         // link the game
         gamepad.setGame(this, this.manageRequest)
 
         // set the gamepad and the gui
         this.gamepad = gamepad
         this.gui = gui
+        this.setCheck = setCheck //NEW LINE 
+        this.unlock = unlock //NEW LINE
+        this.setUnlock = setUnlock //NEW LINE
+        this.id = id //NEW LINE
+
     }
     /* --- Game handlers --- */
 
@@ -104,7 +109,14 @@ class Game {
         // if the game is finished show win/lose alert
         if (request.method == Gamepad['STATES']['FINISHED'] && !back) {
             if (pegman.x == marker.x && pegman.y == marker.y)
-                alert('Tu as gagné !')
+            {
+                alert('Tu as gagné !');
+                this.setCheck(true); //NEW LINE
+                const UP = this.unlock;
+                const unlockUP = UP.concat(this.id)
+                this.setUnlock(unlockUP); //NEW LINE
+
+            }
             else
                 alert('Ah, c est raté, mais recommence !')
         }
